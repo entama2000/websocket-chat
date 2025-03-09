@@ -20,6 +20,7 @@ public class ConnectionEventListener {
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        @SuppressWarnings("null")
         String username = (String)headerAccessor.getSessionAttributes().get("username");
         if (username != null) {
             ChatMessage chatMessage = ChatMessage.builder()

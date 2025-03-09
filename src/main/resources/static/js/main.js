@@ -6,11 +6,12 @@ function connect(event){
     username = $("#name").val().trim();
     // Switch page and connect to WebSocket
     if(username) {
+        console.log('Connecting to WebSocket...');
         $("#username-page").addClass('d-none');
         $("#chat-page").removeClass('d-none');
         
         var socket = new SockJS('/ws');
-        stompClient = stompClient.over(socket);
+        stompClient = Stomp.over(socket); // 修正箇所
 
         stompClient.connect({}, onConnected, onError);
     }
