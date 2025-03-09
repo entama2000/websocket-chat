@@ -36,5 +36,31 @@ function onError(error) {
     $("#connecting").text('Could not connect to WebSocket server. Please refresh this page to try again!').css('color', 'red');
 }
 
+function sendMessage(event){
+    var messageConetent = $("#message").val().trim();
+    if(messageConetent && stompClient) {
+        var chatMessage = {
+            sender: username,
+            content: $("#message").val(),
+            type: "CHAT"
+        };
+        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+        $("#message").val('');
+    }
+    event.preventDefault();
+}
+
+function onMessageReceived(payload) {
+    var message = JSON.parse(payload.body);
+    if(message.type === 'JOIN') {
+        $("#message-area").prepend(`<tr><td class="text-secondary fs-6">${message.sender} joined the chat!</td></tr>`);
+    } else if(message.type === 'LEAVE') {
+        $("#message-area").prepend(`<tr><td class="text-secondary fs-6">${message.sender} left the chat!</td></tr>`);
+    } else {
+        $("#message-area").prepend(`<tr><td class="fs-5"><b>${message.sender} :</b> ${message.content}</td></tr>`);
+    }
+}
+
 // Add EventListener
 $("#username-form").on('submit', connect);
+$("#message-form").on('submit', sendMessage);
